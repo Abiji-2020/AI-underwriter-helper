@@ -54,7 +54,7 @@ export default async function handler(req: Request) {
               },
               email: {
                 type: "string",
-                description: `A VERY short, concise, and minimalist email draft to the broker.  
+                description: `A descriptive, and minimalist email draft to the broker.  
                   Do NOT use placeholders. 
                   Use subject line and body line. 
                   Keep the regards line.
