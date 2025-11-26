@@ -54,8 +54,11 @@ export default async function handler(req: Request) {
               },
               email: {
                 type: "string",
-                description:
-                  "A VERY short, concise, and minimalist email draft to the broker. Do NOT use markdown format.  Do NOT use placeholders. Use bulletins and short sentences. Tone: Direct and professional.",
+                description: `A VERY short, concise, and minimalist email draft to the broker. Do NOT use markdown format.  
+                  Do NOT use placeholders. 
+                  Use subject line and body line. 
+                  Keep the regards line.
+                  Use bulletins when necessary and short sentences. have a professional tone.`,
               },
             },
             required: ["insight", "email"],
