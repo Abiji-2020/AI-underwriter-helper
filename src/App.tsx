@@ -1,4 +1,6 @@
-import { Dashboard } from './components/Dashboard';
+import { Dashboard } from "./components/Dashboard";
+
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
       <main className="flex-1 flex flex-col">
         <Dashboard />
       </main>
+      <Toaster />
     </div>
   );
 }

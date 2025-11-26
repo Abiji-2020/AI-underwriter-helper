@@ -1,23 +1,23 @@
-import OpenAI from 'openai';
+import OpenAI from "openai";
 
 export const config = {
-    runtime: 'edge',
+  runtime: "edge",
 };
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: process.env.OPENAI_BASE_URL,
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL,
 });
 
 export default async function handler(req: Request) {
-    if (req.method !== 'POST') {
-        return new Response('Method Not Allowed', { status: 405 });
-    }
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
 
-    try {
-        const { trace, price, inputs } = await req.json();
+  try {
+    const { trace, price, inputs } = await req.json();
 
-        const prompt = `
+    const prompt = `
     You are an expert insurance underwriter assistant.
     Analyze the following submission and pricing trace for a General Liability policy.
     
@@ -36,43 +36,47 @@ export default async function handler(req: Request) {
     Provide a professional analysis.
     `;
 
-        const completion = await openai.chat.completions.create({
-            messages: [{ role: 'system', content: prompt }],
-            model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-            response_format: {
-                type: "json_schema",
-                json_schema: {
-                    name: "underwriting_report",
-                    strict: true,
-                    schema: {
-                        type: "object",
-                        properties: {
-                            insight: {
-                                type: "string",
-                                description: "A concise, professional explanation of the key drivers of the price, referencing specific inputs and their impact."
-                            },
-                            email: {
-                                type: "string",
-                                description: "A polite, professional email draft to the broker explaining the quote and the reasoning behind it."
-                            }
-                        },
-                        required: ["insight", "email"],
-                        additionalProperties: false
-                    }
-                }
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "system", content: prompt }],
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "underwriting_report",
+          strict: true,
+          schema: {
+            type: "object",
+            properties: {
+              insight: {
+                type: "string",
+                description:
+                  "A concise, professional explanation of the key drivers of the price, referencing specific inputs and their impact.",
+              },
+              email: {
+                type: "string",
+                description:
+                  "A polite, professional email draft to the broker explaining the quote and the reasoning behind it.",
+              },
             },
-        });
+            required: ["insight", "email"],
+            additionalProperties: false,
+          },
+        },
+      },
+    });
 
-        const content = completion.choices[0].message.content;
-        return new Response(content, {
-            headers: { 'Content-Type': 'application/json' },
-        });
-
-    } catch (error) {
-        console.error('Error generating report:', error);
-        return new Response(JSON.stringify({ error: 'Failed to generate report' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    }
+    const content = completion.choices[0].message.content;
+    return new Response(content, {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Error generating report:", error);
+    return new Response(
+      JSON.stringify({ error: "Failed to generate report" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
 }
