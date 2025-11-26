@@ -50,12 +50,12 @@ export default async function handler(req: Request) {
               insight: {
                 type: "string",
                 description:
-                  "A concise, professional explanation of the key drivers of the price, referencing specific inputs and their impact.",
+                  "A detailed , professional explanation of the key drivers of the price, referencing specific inputs and their impact along with the conversion rates and why they are important for the calculation.",
               },
               email: {
                 type: "string",
                 description:
-                  "A VERY short, concise, and minimalist email draft to the broker. Do NOT use markdown format.  Do NOT use placeholders. Just the body text. Max 3-4 sentences. Tone: Direct and professional.",
+                  "A VERY short, concise, and minimalist email draft to the broker. Do NOT use markdown format.  Do NOT use placeholders. Use bulletins and short sentences. Tone: Direct and professional.",
               },
             },
             required: ["insight", "email"],
