@@ -18,23 +18,38 @@ export default async function handler(req: Request) {
     const { trace, price, inputs } = await req.json();
 
     const prompt = `
-    You are an expert insurance underwriter assistant.
-    Analyze the following submission and pricing trace for a General Liability policy.
-    
-    Submission Details:
-    - Industry: ${inputs.industry}
-    - Revenue: $${inputs.revenue.toLocaleString()}
-    - Years in Business: ${inputs.yearsInBusiness}
-    - Prior Claims: ${inputs.priorClaims}
-    - Base Rate: $${inputs.baseRate}
+You are a Senior Underwriter Assistant at a modern MGA. 
+Your goal is to explain a transparent, algorithmic rating decision to a human underwriter and draft a communication for the broker.
 
-    Pricing Trace (Step-by-Step):
-    ${JSON.stringify(trace, null, 2)}
-    
-    Final Premium: $${price}
-    
-    Provide a professional analysis. Keep the email output extremely concise and minimalist.
-    `;
+### INPUT DATA
+**Submission Profile:**
+- Industry Class: ${inputs.industry}
+- Annual Revenue: $${inputs.revenue.toLocaleString()} (Basis for exposure)
+- Business Maturity: ${inputs.yearsInBusiness} years
+- Loss History: ${inputs.priorClaims} claims in the lookback period
+
+**Algorithmic Pricing Trace (The Math):**
+${JSON.stringify(trace, null, 2)}
+
+**Final Calculated Premium:** $${price.toLocaleString()}
+
+### INSTRUCTIONS
+
+**PART 1: INTERNAL RISK SUMMARY**
+Provide a brief, bulleted analysis for the internal underwriter. 
+- Identify the *primary* driver of the cost (e.g., High Revenue, Industry Risk, or Claims).
+- Highlight any credits applied (e.g., Stability Discount) or debits (Claims Surcharge).
+- If the risk is clean (0 claims, >3 years business), label it as "Preferred Risk."
+- If there are claims, flag it as "Standard/High Risk."
+
+**PART 2: BROKER EMAIL DRAFT**
+Draft a clean, minimalist email to the broker. 
+- **Tone:** Professional, direct, and partnership-focused.
+- **Content:** State the final premium clearly. Briefly explain the rating factors (e.g., "The rate reflects the increase in revenue exposure and the construction class code"). 
+- **Constraint:** Do NOT use placeholders like "[Broker Name]" or "[Date]". Use generic openers like "Hello," or "Hi Team,".
+- **Format:** Use Markdown.
+
+`;
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
