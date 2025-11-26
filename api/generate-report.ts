@@ -33,7 +33,7 @@ export default async function handler(req: Request) {
     
     Final Premium: $${price}
     
-    Provide a professional analysis.
+    Provide a professional analysis. Keep the email output extremely concise and minimalist.
     `;
 
     const completion = await openai.chat.completions.create({
@@ -55,7 +55,7 @@ export default async function handler(req: Request) {
               email: {
                 type: "string",
                 description:
-                  "A polite, professional email draft to the broker explaining the quote and the reasoning behind it.",
+                  "A VERY short, concise, and minimalist email draft to the broker. Do NOT use markdown format.  Do NOT use placeholders. Just the body text. Max 3-4 sentences. Tone: Direct and professional.",
               },
             },
             required: ["insight", "email"],
